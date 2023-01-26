@@ -18,6 +18,9 @@ class ReportController extends ApiController
     {
         try {
             $report = Report::orderBy($this->sort, $this->sortDirection)
+                ->when($request->status, function ($query, $status) {
+                    return $query->where('status', $status);
+                })
                 ->paginate($this->getLimitPerPage());
         } catch (QueryException $e) {
             return $this->respondInvalidQuery();

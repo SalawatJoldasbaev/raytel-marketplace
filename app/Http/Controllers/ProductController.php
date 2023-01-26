@@ -110,7 +110,12 @@ class ProductController extends ApiController
                 ]);
             }
 
-            if ($token->tokenable_type == 'App\\Models\\Device' and count($viewdProducts) == $user->limit_left) {
+            if (
+                $token->tokenable_type == 'App\\Models\\Device' and
+                (count($viewdProducts) == $user->limit_left or
+                    strtotime(date('Y-m-d')) - strtotime($user->created_at) > 259200
+                )
+            ) {
                 $this->setHTTPStatusCode(403);
                 return $this->respond([
                     'error' => [

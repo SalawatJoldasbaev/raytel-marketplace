@@ -21,6 +21,7 @@ Route::middleware(['auth:sanctum', 'ability:admin,mobile'])->group(function () {
     Route::post('/files', [FileController::class, 'upload']);
     Route::get('/files/{file_name}', [FileController::class, 'getFile']);
     Route::get('/stores', [StoreController::class, 'index']);
+    Route::get('/products', [ProductController::class, 'index']);
     Route::get('/products/random', [ProductController::class, 'RandomProduct']);
 });
 
@@ -46,7 +47,6 @@ Route::middleware(['auth:sanctum', 'abilities:admin'])->group(function () {
     Route::prefix('/products')
         ->controller(ProductController::class)
         ->group(function () {
-            Route::get('/', 'index');
             Route::post('/', 'store');
             Route::patch('/', 'update');
             Route::delete('/{product}', 'destroy');
@@ -58,5 +58,11 @@ Route::middleware(['auth:sanctum', 'abilities:admin'])->group(function () {
             Route::get('/', 'index');
             Route::post('/approveReport', 'approveReport');
             Route::post('/declinedReport', 'declinedReport');
+        });
+
+    Route::prefix('/users')
+        ->controller(UserController::class)
+        ->group(function () {
+            Route::get('/', 'index');
         });
 });

@@ -2,20 +2,29 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
+use App\Http\Resources\User\UserCollection;
 use Carbon\Carbon;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Database\QueryException;
 
 class UserController extends ApiController
 {
-    public function activeUser(Request $request)
+    public function index(Request $request)
     {
-        $user = User::find($request->user_id);
-        if (!$user) {
-            return $this->respondNotFound();
+        try {
+            $users = User::orderBy($this->sort, $this->sortDirection)
+                ->when($request->search, function ($query, $search) {
+                    return $query->where('phone', 'like', '%' . $search . '%')
+                        ->orWhere('name', 'like', '%' . $search . '%');
+                })->when($request->status, function ($query, $status) {
+                    return $query->where('status', $status);
+                })
+                ->paginate($this->getLimitPerPage());
+        } catch (QueryException $e) {
+            return $this->respondInvalidQuery();
         }
-        $user->actived_at = Carbon::now();
-        $user->save();
-        return;
+
+        return new UserCollection($users);
     }
 }

@@ -14,11 +14,6 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'name',
         'phone',
@@ -26,6 +21,10 @@ class User extends Authenticatable
         'actived_at',
         'password',
         'device_id',
+    ];
+
+    protected $casts = [
+        'actived_at' => "datetime:Y-m-d H:i:s",
     ];
 
     protected function password(): Attribute
