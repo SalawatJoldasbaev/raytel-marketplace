@@ -14,6 +14,9 @@ class StoreResource extends JsonResource
             'name' => $this->name,
             'phone' => $this->phone,
             'description' => $this->description,
+            'telegram'=> $this->telegram,
+            'instagram'=> $this->instagram,
+            'active'=> $this->active,
             'created_at' => $this->created_at->format('Y-m-d H:i:s'),
         ];
     }

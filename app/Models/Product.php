@@ -16,7 +16,7 @@ class Product extends Model
         'description',
     ];
 
-    public function store()
+    public function store(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Store::class);
     }

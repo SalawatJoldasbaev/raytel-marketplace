@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\Product\DestroyProduct;
 use Carbon\Carbon;
 use App\Models\Product;
 use Illuminate\Http\Request;
@@ -17,7 +18,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class ProductController extends ApiController
 {
-    public function index(Request $request)
+    public function index(Request $request): \Illuminate\Http\JsonResponse|ProductCollection
     {
         try {
             $stores = Product::orderBy($this->sort, $this->sortDirection)
@@ -32,7 +33,7 @@ class ProductController extends ApiController
         return new ProductCollection($stores);
     }
 
-    public function store(Request $request)
+    public function store(Request $request): \Illuminate\Http\JsonResponse|ProductResource
     {
         try {
             $employee = app(CreateProduct::class)->execute([
@@ -68,8 +69,15 @@ class ProductController extends ApiController
         return new ProductResource($store);
     }
 
-    public function destroy($store)
+    public function destroy($product)
     {
+        try {
+            app(DestroyProduct::class)->execute($product);
+        } catch (ModelNotFoundException $e) {
+            return $this->respondNotFound();
+        }
+
+        return response(['message' => 'success'], 200);
     }
 
     public function RandomProduct(Request $request)
@@ -101,7 +109,9 @@ class ProductController extends ApiController
 
         if ($user->tokenCan('mobile')) {
             $viewdProducts = ViewedProduct::whereDate('viewed_at', Carbon::today())->pluck('product_id');
-            $product = Product::whereNotIn('id', $viewdProducts)->inRandomOrder()->first();
+            $product = Product::whereNotIn('id', $viewdProducts)->whereHas('store', function ($query){
+                return $query->where('active', true);
+            })->inRandomOrder()->first();
 
             if (!$product) {
                 $this->setHTTPStatusCode(404);

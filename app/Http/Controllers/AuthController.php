@@ -22,7 +22,6 @@ class AuthController extends ApiController
     {
         $this->tokenManager = $tokenManager;
     }
-
     public function login(AuthRequest $request)
     {
         $user = Employee::where('phone', $request->phone)->first();

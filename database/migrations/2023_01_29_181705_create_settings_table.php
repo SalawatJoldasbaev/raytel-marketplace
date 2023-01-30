@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\File;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -14,15 +13,17 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('stores', function (Blueprint $table) {
+        Schema::create('settings', function (Blueprint $table) {
             $table->id();
-            $table->string('image');
-            $table->string('name');
+            $table->text('description');
+            $table->string('title');
+            $table->double('price');
+            $table->string('card_number');
+            $table->string('card_holder');
             $table->string('phone');
-            $table->string('description')->nullable();
-            $table->string('telegram')->nullable();
-            $table->string('instagram')->nullable();
-            $table->boolean('active')->default(true);
+            $table->string('end_text');
+            $table->text('block_text');
+            $table->text('unblock_text');
             $table->timestamps();
         });
     }
@@ -34,6 +35,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('stores');
+        Schema::dropIfExists('settings');
     }
 };

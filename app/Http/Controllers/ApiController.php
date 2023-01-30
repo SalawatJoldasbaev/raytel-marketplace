@@ -13,22 +13,22 @@ class ApiController extends Controller
     /**
      * @var int
      */
-    protected $limitPerPage = 0;
+    protected int $limitPerPage = 0;
 
     /**
      * @var string
      */
-    protected $sort = 'created_at';
+    protected string $sort = 'created_at';
 
     /**
      * @var string
      */
-    protected $withParameter = null;
+    protected ?string $withParameter = null;
 
     /**
      * @var string
      */
-    protected $sortDirection = 'asc';
+    protected string $sortDirection = 'asc';
 
     public function __construct()
     {
@@ -142,9 +142,9 @@ class ApiController extends Controller
         $acceptedCriteria = [
             'created_at',
             'updated_at',
+            'name',
             '-created_at',
             '-updated_at',
-            'name',
             '-name',
         ];
 

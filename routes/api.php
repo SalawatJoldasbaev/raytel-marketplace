@@ -23,6 +23,7 @@ Route::middleware(['auth:sanctum', 'ability:admin,mobile'])->group(function () {
     Route::get('/stores', [StoreController::class, 'index']);
     Route::get('/products', [ProductController::class, 'index']);
     Route::get('/products/random', [ProductController::class, 'RandomProduct']);
+    Route::get('/settings', [\App\Http\Controllers\SettingsController::class, 'show']);
 });
 
 Route::middleware(['auth:sanctum', 'abilities:admin'])->group(function () {
@@ -41,7 +42,7 @@ Route::middleware(['auth:sanctum', 'abilities:admin'])->group(function () {
         ->group(function () {
             Route::post('/', 'store');
             Route::patch('/', 'update');
-            Route::delete('/{store}', 'destroy');
+            Route::delete('/clear/{store}', 'clear');
         });
 
     Route::prefix('/products')
@@ -65,4 +66,5 @@ Route::middleware(['auth:sanctum', 'abilities:admin'])->group(function () {
         ->group(function () {
             Route::get('/', 'index');
         });
+    Route::patch('/settings', [\App\Http\Controllers\SettingsController::class, 'update']);
 });

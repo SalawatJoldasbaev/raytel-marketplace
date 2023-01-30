@@ -5,21 +5,19 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Store extends Model
+class Settings extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'image',
-        'name',
-        'phone',
         'description',
-        'telegram',
-        'instagram',
-        'active',
-    ];
-
-    public $casts = [
-        'active'=> 'boolean'
+        'title',
+        'price',
+        'card_number',
+        'card_holder',
+        'phone',
+        'end_text',
+        'block_text',
+        'unblock_text',
     ];
 }

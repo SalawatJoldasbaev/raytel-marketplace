@@ -15,13 +15,15 @@ class CreateStore extends BaseService
             'phone' => 'required',
             'description' => 'nullable',
             'image' => 'required',
+            'telegram'=> 'nullable',
+            'instagram'=> 'nullable',
         ];
     }
 
     public function execute(array $data): Store
     {
+        $data['active'] = true;
         $this->validate($data);
-        $store = Store::create($data);
-        return $store;
+        return Store::create($data);
     }
 }

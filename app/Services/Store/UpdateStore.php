@@ -18,6 +18,9 @@ class UpdateStore extends BaseService
             'phone' => 'required',
             'description' => 'nullable',
             'image' => 'nullable',
+            'telegram'=> 'nullable',
+            'instagram'=> 'nullable',
+            'active'=> 'required|boolean'
         ];
     }
 
@@ -28,7 +31,10 @@ class UpdateStore extends BaseService
         $updateData = [
             'name' => $data['name'],
             'phone' => $data['phone'],
+            'telegram'=> $data['telegram'],
+            'instagram'=> $data['instagram'],
             'description' => $data['description'],
+            'active'=> $data['active'],
         ];
         if (!is_null($data['image'])) {
             $updateData['image'] = $data['image'];
