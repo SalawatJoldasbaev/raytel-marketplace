@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreignIdFor(Store::class)->constrained()->restrictOnDelete();
             $table->string('name');
             $table->string('image');
+            $table->string('watermark_image');
             $table->string('description')->nullable();
             $table->timestamps();
         });

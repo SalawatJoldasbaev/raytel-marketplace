@@ -14,6 +14,7 @@ class ProductResource extends JsonResource
             'name' => $this->name,
             'description' => $this->description,
             'image' => $this->image,
+            'watermark_image'=> $this->watermark_image,
             'created_at' => $this->created_at->format('Y-m-d H:i:s'),
             'store' => new StoreResource($this->store),
         ];

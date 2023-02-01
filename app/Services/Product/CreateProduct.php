@@ -15,13 +15,13 @@ class CreateProduct extends BaseService
             'name' => 'required',
             'description' => 'nullable',
             'image' => 'required',
+            'watermark_image'=> 'required',
         ];
     }
 
     public function execute(array $data): Product
     {
         $this->validate($data);
-        $product = Product::create($data);
-        return $product;
+        return Product::create($data);
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Services\Product;
 
 use App\Models\Employee;
+use App\Models\File;
 use App\Models\Product;
 use App\Models\ViewedProduct;
 use App\Services\BaseService;
@@ -23,10 +24,16 @@ class DestroyProduct extends BaseService
         } catch (ModelNotFoundException $e) {
             throw new ModelNotFoundException('Employee does not exist');
         }
+
         ViewedProduct::where('product_id', $product->id)->delete();
         $path = explode(config('app.url') . '/api/', $product->image)[1];
+        File::where('path', $path)->delete();
+        Storage::delete($path);
+        $path = explode(config('app.url') . '/api/', $product->watermark_image)[1];
+        File::where('path', $path)->delete();
         Storage::delete($path);
         $product->delete();
+
         return true;
     }
 }

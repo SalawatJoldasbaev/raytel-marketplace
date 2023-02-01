@@ -14,8 +14,11 @@ class Product extends Model
         'store_id',
         'image',
         'description',
+        'watermark_image',
     ];
-
+    protected $casts = [
+        'path'=> 'json'
+    ];
     public function store(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Store::class);

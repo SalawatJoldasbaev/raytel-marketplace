@@ -41,6 +41,7 @@ class ProductController extends ApiController
                 'name' => $request->name,
                 'description' => $request->description,
                 'image' => $request->image,
+                'watermark_image'=> $request->watermark_image,
             ]);
         } catch (ModelNotFoundException $e) {
             return $this->respondNotFound();
@@ -60,6 +61,7 @@ class ProductController extends ApiController
                 'name' => $request->name,
                 'description' => $request->description,
                 'image' => $request->image,
+                'watermark_image'=> $request->watermark_image,
             ]);
         } catch (ModelNotFoundException $e) {
             return $this->respondNotFound();

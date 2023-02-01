@@ -15,6 +15,7 @@ class UpdateProduct extends BaseService
             'name' => 'required',
             'description' => 'nullable',
             'image' => 'nullable',
+            'watermark_image'=> 'nullable',
         ];
     }
 
@@ -28,6 +29,9 @@ class UpdateProduct extends BaseService
         ];
         if (!is_null($data['image'])) {
             $updateData['image'] = $data['image'];
+        }
+        if (!is_null($data['watermark_image'])) {
+            $updateData['watermark_image'] = $data['watermark_image'];
         }
         $product->update($updateData);
         return $product;

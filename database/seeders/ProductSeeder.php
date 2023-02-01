@@ -28,6 +28,7 @@ class ProductSeeder extends Seeder
                 'store_id' => rand(1, 3),
                 'name' => 'Product ' . $i,
                 'image' => "http://127.0.0.1:8000/api/files/Grb3iMBZxCm5Xu05j2TVCsPAzPk6RxZTf8l2lshQ.jpg",
+                'watermark_image' => "http://127.0.0.1:8000/api/files/Grb3iMBZxCm5Xu05j2TVCsPAzPk6RxZTf8l2lshQ.jpg",
                 "description" => $description[rand(0, 4)],
             ]);
         }
