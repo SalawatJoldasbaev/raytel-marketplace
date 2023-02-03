@@ -11,15 +11,20 @@ class FileController extends Controller
 {
     public function upload(Request $request)
     {
+        $final = [];
         if ($request->hasFile('file')) {
             $file = $request->file('file');
-            $name = $file->hashName();
-            $path = $file->storeAs('files', $name);
-            $file = File::create([
-                'path' => $path,
-                'url' => config('app.url') . '/api/' . $path
-            ]);
-            return new FileResource($file);
+            foreach ($file as $item) {
+                $name = $item->hashName();
+                $path = $item->storeAs('files', $name);
+                $file = File::create([
+                    'path' => $path,
+                    'url' => config('app.url') . '/api/' . $path
+                ]);
+                $final[]= $file;
+            }
+
+            return FileResource::collection($final);
         }
     }
 

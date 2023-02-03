@@ -33,23 +33,17 @@ class ProductController extends ApiController
         return new ProductCollection($stores);
     }
 
-    public function store(Request $request): \Illuminate\Http\JsonResponse|ProductResource
+    public function store(Request $request)
     {
         try {
-            $employee = app(CreateProduct::class)->execute([
-                'store_id' => $request->store_id,
-                'name' => $request->name,
-                'description' => $request->description,
-                'image' => $request->image,
-                'watermark_image'=> $request->watermark_image,
-            ]);
+            $employee = app(CreateProduct::class)->execute($request->all());
         } catch (ModelNotFoundException $e) {
             return $this->respondNotFound();
         } catch (ValidationException $e) {
             return $this->respondValidatorFailed($e->validator);
         }
 
-        return new ProductResource($employee);
+        return ProductResource::collection($employee);
     }
 
     public function update(Request $request)

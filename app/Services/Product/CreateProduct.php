@@ -2,6 +2,7 @@
 
 namespace App\Services\Product;
 
+use App\Http\Resources\Product\ProductResource;
 use App\Models\Product;
 use App\Services\BaseService;
 use App\Models\Store;
@@ -12,16 +13,23 @@ class CreateProduct extends BaseService
     {
         return [
             'store_id' => 'required|exists:stores,id',
-            'name' => 'required',
-            'description' => 'nullable',
-            'image' => 'required',
-            'watermark_image'=> 'required',
+            'products'=> 'required|array',
+            'products.*.name' => 'required',
+            'products.*.description' => 'nullable',
+            'products.*.image' => 'required',
+            'products.*.watermark_image'=> 'required',
         ];
     }
 
-    public function execute(array $data): Product
+    public function execute(array $data)
     {
         $this->validate($data);
-        return Product::create($data);
+        $final = [];
+        foreach ($data['products'] as $item) {
+            $temp = $item;
+            $temp['store_id'] = $data['store_id'];
+            $final[] = Product::create($temp);
+        }
+        return $final;
     }
 }
