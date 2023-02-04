@@ -14,5 +14,6 @@ class Report extends Model
         'phone',
         'status',
         'name',
+        'type'
     ];
 }

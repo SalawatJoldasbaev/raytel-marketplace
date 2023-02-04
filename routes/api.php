@@ -23,7 +23,9 @@ Route::middleware(['auth:sanctum', 'ability:admin,mobile'])->group(function () {
     Route::get('/stores', [StoreController::class, 'index']);
     Route::get('/products', [ProductController::class, 'index']);
     Route::get('/products/random', [ProductController::class, 'RandomProduct']);
+    Route::post('/products/view/{product}', [ProductController::class, 'viewProduct']);
     Route::get('/settings', [\App\Http\Controllers\SettingsController::class, 'show']);
+    Route::post('/newPayment', [\App\Http\Controllers\NewPaymentController::class, 'newPayment']);
 });
 
 Route::middleware(['auth:sanctum', 'abilities:admin'])->group(function () {

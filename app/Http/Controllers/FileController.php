@@ -15,13 +15,13 @@ class FileController extends Controller
         if ($request->hasFile('file')) {
             $file = $request->file('file');
             foreach ($file as $item) {
-                $name = $item->hashName();
+                $name = date('Y_m_d').'_'.\Str::random(32).'.'.$item->getClientOriginalExtension();
                 $path = $item->storeAs('files', $name);
                 $file = File::create([
                     'path' => $path,
                     'url' => config('app.url') . '/api/' . $path
                 ]);
-                $final[]= $file;
+                $final[] = $file;
             }
 
             return FileResource::collection($final);

@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('image');
             $table->string('phone');
             $table->enum('status', ['accept', 'not accepted', 'pending']);
+            $table->enum('type', ['singUp', 'NewPayment']);
             $table->timestamps();
         });
     }

@@ -7,14 +7,6 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class RandomProductResource extends JsonResource
 {
-    protected $view_count;
-
-    public function view_count($value)
-    {
-        $this->view_count = $value;
-        return $this;
-    }
-
     public function toArray($request)
     {
         return [
@@ -24,7 +16,6 @@ class RandomProductResource extends JsonResource
             'image' => $this->image,
             'watermark_image'=> $this->watermark_image,
             'created_at' => $this->created_at->format('Y-m-d H:i:s'),
-            'view_count' => $this->view_count,
             'store' => new StoreResource($this->store),
         ];
     }

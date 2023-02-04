@@ -88,6 +88,7 @@ class AuthController extends ApiController
             'phone' => $request->phone,
             'image' => $request->image,
             'status' => 'pending',
+            'type'=> 'singUp',
         ]);
 
         return response([
@@ -101,8 +102,6 @@ class AuthController extends ApiController
         $user = User::where('phone', $request->phone)->first();
         if (!$user or !Hash::check($request->password, $user->password)) {
             return $this->respondUnauthorized('phone or password is incorrect');
-        } elseif ($user->status == 'inactive') {
-            return $this->respondUnauthorized('inactive');
         }
 
         $device = Device::where('device_id', $request->device_id)->first();
@@ -116,6 +115,7 @@ class AuthController extends ApiController
                 'device_id' => $device->id,
             ]);
         }
+
         return response([
             'token' => $this->tokenManager->createToken($user, ['mobile'])->plainTextToken,
             'name' => $user->name,
