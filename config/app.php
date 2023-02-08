@@ -196,6 +196,7 @@ return [
         App\Providers\RouteServiceProvider::class,
         App\Providers\TelescopeServiceProvider::class,
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
+        Lanin\Laravel\ApiDebugger\ServiceProvider::class,
     ],
 
     /*
@@ -211,6 +212,7 @@ return [
 
     'aliases' => Facade::defaultAliases()->merge([
         // 'ExampleClass' => App\Example\ExampleClass::class,
+        'Debugger' => Lanin\Laravel\ApiDebugger\Facade::class,
     ])->toArray(),
 
 ];

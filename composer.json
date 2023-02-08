@@ -5,12 +5,13 @@
     "keywords": ["framework", "laravel"],
     "license": "MIT",
     "require": {
-        "php": "^8.0.2",
         "guzzlehttp/guzzle": "^7.2",
+        "lanin/laravel-api-debugger": "^4.0",
         "laravel/framework": "^9.19",
         "laravel/sanctum": "^3.0",
         "laravel/telescope": "^4.12",
-        "laravel/tinker": "^2.7"
+        "laravel/tinker": "^2.7",
+        "php": "^8.0.2"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^2.12",

@@ -15,11 +15,11 @@ Route::post('/signIn/mobile/device', [AuthController::class, 'mobileDevice']);
 
 Route::post('/signIn/mobile/phone', [AuthController::class, 'mobilePhone']);
 Route::post('/signUp/mobile/phone', [AuthController::class, 'signUpMobile']);
+Route::get('/files/{file_name}', [FileController::class, 'getFile']);
 
 Route::middleware(['auth:sanctum', 'ability:admin,mobile'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/files', [FileController::class, 'upload']);
-    Route::get('/files/{file_name}', [FileController::class, 'getFile']);
     Route::get('/stores', [StoreController::class, 'index']);
     Route::get('/products', [ProductController::class, 'index']);
     Route::get('/products/random', [ProductController::class, 'RandomProduct']);
