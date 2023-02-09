@@ -3,6 +3,7 @@
 namespace App\Services\Payment;
 
 
+use App\Exceptions\UnauthorizedException;
 use App\Models\Report;
 use App\Services\BaseService;
 
@@ -15,12 +16,15 @@ class NewPayment extends BaseService
         ];
     }
 
+    /**
+     * @throws UnauthorizedException
+     */
     public function execute(array $data)
     {
         $this->validate($data);
         $user = \Auth::user();
         if($user->currentAccessToken()->tokenable_type != 'App\\Models\\User'){
-//            throw
+            throw new UnauthorizedException("Aldin sistemag'a login bolip kirin' yaki registrasiyadan otin'");
         }
         $report = Report::create([
             'name' => $user->name,

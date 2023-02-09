@@ -25,6 +25,8 @@ class FileController extends Controller
             }
 
             return FileResource::collection($final);
+        }else{
+            return 'error';
         }
     }
 

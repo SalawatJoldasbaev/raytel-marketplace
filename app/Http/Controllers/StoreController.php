@@ -19,18 +19,39 @@ class StoreController extends ApiController
     {
         $user = $request->user();
         try {
+            if($request->has('store_id')){
+                $per_page = ($this->getLimitPerPage() == 0 ? 15 : $this->getLimitPerPage())-1;
+                $this->setLimitPerPage($per_page);
+            }
+
             $stores = Store::orderBy($this->sort, $this->sortDirection)
-            ->when($request->get('search'), function ($query, $search){
-                return $query->where('name', 'like', '%'.$search.'%')
-                            ->orWhere('telegram', 'like', $search.'%')
-                            ->orWhere('instagram', 'like', $search.'%');
-            });
+                 ->when($request->get('search'), function ($query, $search){
+                    return $query->where('name', 'like', '%'.$search.'%')
+                                ->orWhere('telegram', 'like', $search.'%')
+                                ->orWhere('instagram', 'like', $search.'%');
+                })->when($request->get('store_id'), function ($query, $store_id){
+                    $query->whereNot('id', $store_id);
+                });
 
             $token = $user->currentAccessToken();
             if ($token->tokenable_type != 'App\Models\Employee') {
                 $stores = $stores->where('active', true);
             }
             $stores = $stores->paginate($this->getLimitPerPage());
+            if($request->has('store_id')){
+                $store = Store::find($request->get('store_id'));
+                $count = count($stores);
+                for ($i = 0; $i < $count+1; $i++){
+                    if($i == 0) {
+                        $temp = $stores[0];
+                        $stores[0] = $store;
+                        continue;
+                    }
+                    $temp2 = $stores[$i];
+                    $stores[$i] = $temp;
+                    $temp = $temp2;
+                }
+            }
         } catch (QueryException $e) {
             return $this->respondInvalidQuery();
         }

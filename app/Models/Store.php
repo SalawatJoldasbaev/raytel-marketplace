@@ -22,4 +22,9 @@ class Store extends Model
     public $casts = [
         'active'=> 'boolean'
     ];
+
+    public function product(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Product::class);
+    }
 }

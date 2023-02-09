@@ -3,7 +3,9 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Product;
 use App\Models\Settings;
+use App\Models\Store;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -32,10 +34,11 @@ class DatabaseSeeder extends Seeder
             'phone'=> '+998953558899',
             'end_text'=> 'end text',
         ]);
+        Store::factory()->has(Product::factory()->count(33))->count(100)->create();
         $this->call([
             EmployeeSeeder::class,
-            StoreSeeder::class,
-            ProductSeeder::class,
+//            StoreSeeder::class,
+//            ProductSeeder::class,
         ]);
     }
 }
