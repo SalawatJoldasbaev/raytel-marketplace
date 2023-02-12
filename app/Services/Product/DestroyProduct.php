@@ -26,12 +26,17 @@ class DestroyProduct extends BaseService
         }
 
         ViewedProduct::where('product_id', $product->id)->delete();
-        $path = explode(config('app.url') . '/api/', $product->image)[1];
-        File::where('path', $path)->delete();
-        Storage::delete($path);
-        $path = explode(config('app.url') . '/api/', $product->watermark_image)[1];
-        File::where('path', $path)->delete();
-        Storage::delete($path);
+
+        $path = explode(config('app.url') . '/api/', $product->image);
+        if(key_exists(1, $path)){
+            File::where('path', $path)->delete();
+            Storage::delete($path);
+        }
+        $path = explode(config('app.url') . '/api/', $product->watermark_image);
+        if(key_exists(1, $path)){
+            File::where('path', $path)->delete();
+            Storage::delete($path);
+        }
         $product->delete();
 
         return true;
