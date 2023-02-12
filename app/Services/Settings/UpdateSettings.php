@@ -4,13 +4,14 @@ namespace App\Services\Settings;
 
 use App\Models\Settings;
 use App\Services\BaseService;
+use Illuminate\Validation\ValidationException;
 
 class UpdateSettings extends BaseService
 {
     /**
      * @return string[]
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'description'=> 'required',
@@ -28,6 +29,7 @@ class UpdateSettings extends BaseService
     /**
      * @param array $data
      * @return Settings
+     * @throws ValidationException
      */
     public function execute(array $data): Settings
     {

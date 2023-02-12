@@ -12,12 +12,12 @@ use Illuminate\Support\Facades\Storage;
 
 class DestroyProduct extends BaseService
 {
-    public function rules()
+    public function rules():array
     {
         return [];
     }
 
-    public function execute($product)
+    public function execute($product): bool
     {
         try {
             $product = Product::findOrFail($product);

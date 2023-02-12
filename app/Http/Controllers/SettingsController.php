@@ -5,11 +5,13 @@ namespace App\Http\Controllers;
 use App\Http\Resources\Settings\SettingsResource;
 use App\Models\Settings;
 use App\Services\Settings\UpdateSettings;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 class SettingsController extends ApiController
 {
-    public function update(Request $request){
+    public function update(Request $request): SettingsResource|JsonResponse
+    {
         try {
             $settings = app(UpdateSettings::class)->execute([
                 'description'=> $request->get('description'),
@@ -29,7 +31,8 @@ class SettingsController extends ApiController
         return new SettingsResource($settings);
     }
 
-    public function show(Request $request){
+    public function show(Request $request): SettingsResource
+    {
         $settings = Settings::find(1);
         return new SettingsResource($settings);
     }

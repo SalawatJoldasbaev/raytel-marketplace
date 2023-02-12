@@ -8,16 +8,21 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class DestroyEmployee extends BaseService
 {
-    public function rules()
+    public function rules():array
     {
         return [];
     }
 
-    public function execute($employee)
+    /**
+     * @param $employee
+     * @return bool
+     * @throws ModelNotFoundException
+     */
+    public function execute($employee): bool
     {
         try {
             $employee = Employee::findOrFail($employee);
-        } catch (ModelNotFoundException $e) {
+        } catch (ModelNotFoundException) {
             throw new ModelNotFoundException('Employee does not exist');
         }
         $employee->delete();

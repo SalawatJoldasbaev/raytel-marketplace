@@ -22,7 +22,7 @@ class ProductController extends ApiController
     {
         try {
             $stores = Product::orderBy($this->sort, $this->sortDirection)
-                ->when($request->store_id, function ($query, $store_id) {
+                ->when($request->get('store_id'), function ($query, $store_id) {
                     return $query->where('store_id', $store_id);
                 })
                 ->with('store')
@@ -37,13 +37,13 @@ class ProductController extends ApiController
     {
         try {
             $employee = app(CreateProduct::class)->execute($request->all());
+            return ProductResource::collection($employee);
         } catch (ModelNotFoundException $e) {
             return $this->respondNotFound();
         } catch (ValidationException $e) {
             return $this->respondValidatorFailed($e->validator);
         }
 
-        return ProductResource::collection($employee);
     }
 
     public function update(Request $request)

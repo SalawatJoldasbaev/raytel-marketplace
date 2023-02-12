@@ -5,6 +5,7 @@ namespace App\Services;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 
 abstract class BaseService
 {
@@ -13,7 +14,7 @@ abstract class BaseService
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [];
     }
@@ -21,8 +22,9 @@ abstract class BaseService
     /**
      * Validate all datas to execute the service.
      *
-     * @param  array  $data
+     * @param array $data
      * @return bool
+     * @throws ValidationException
      */
     public function validate(array $data): bool
     {
@@ -39,7 +41,7 @@ abstract class BaseService
      * @param  mixed  $index
      * @return mixed
      */
-    public function nullOrValue($data, $index)
+    public function nullOrValue(mixed $data, mixed $index): mixed
     {
         $value = Arr::get($data, $index, null);
 

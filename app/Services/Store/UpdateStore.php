@@ -10,7 +10,7 @@ use App\Exceptions\PhoneAlreadyExistsException;
 
 class UpdateStore extends BaseService
 {
-    public function rules()
+    public function rules():array
     {
         return [
             'store_id' => 'required|exists:stores,id',
@@ -24,6 +24,9 @@ class UpdateStore extends BaseService
         ];
     }
 
+    /**
+     * @throws ValidationException
+     */
     public function execute(array $data): Store
     {
         $this->validate($data);

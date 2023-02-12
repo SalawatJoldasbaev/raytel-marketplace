@@ -5,10 +5,14 @@ namespace App\Services\Employee;
 
 use App\Services\BaseService;
 use App\Models\Employee;
+use Illuminate\Validation\ValidationException;
 
 class CreateEmployee extends BaseService
 {
-    public function rules()
+    /**
+     * @return string[]
+     */
+    public function rules(): array
     {
         return [
             'name' => 'required',
@@ -17,10 +21,12 @@ class CreateEmployee extends BaseService
         ];
     }
 
+    /**
+     * @throws ValidationException
+     */
     public function execute(array $data): Employee
     {
         $this->validate($data);
-        $employee = Employee::create($data);
-        return $employee;
+        return Employee::create($data);
     }
 }

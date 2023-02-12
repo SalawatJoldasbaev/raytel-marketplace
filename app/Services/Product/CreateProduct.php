@@ -6,10 +6,11 @@ use App\Http\Resources\Product\ProductResource;
 use App\Models\Product;
 use App\Services\BaseService;
 use App\Models\Store;
+use Illuminate\Validation\ValidationException;
 
 class CreateProduct extends BaseService
 {
-    public function rules()
+    public function rules():array
     {
         return [
             'store_id' => 'required|exists:stores,id',
@@ -21,7 +22,10 @@ class CreateProduct extends BaseService
         ];
     }
 
-    public function execute(array $data)
+    /**
+     * @throws ValidationException
+     */
+    public function execute(array $data): array
     {
         $this->validate($data);
         $final = [];

@@ -12,24 +12,25 @@ use App\Services\Store\UpdateStore;
 use Illuminate\Database\QueryException;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\JsonResponse;
 
 class StoreController extends ApiController
 {
-    public function index(Request $request)
+    public function index(Request $request): JsonResponse|StoreCollection
     {
         $user = $request->user();
         try {
-            if($request->has('store_id')){
-                $per_page = ($this->getLimitPerPage() == 0 ? 15 : $this->getLimitPerPage())-1;
+            if ($request->has('store_id')) {
+                $per_page = ($this->getLimitPerPage() == 0 ? 15 : $this->getLimitPerPage()) - 1;
                 $this->setLimitPerPage($per_page);
             }
 
             $stores = Store::orderBy($this->sort, $this->sortDirection)
-                 ->when($request->get('search'), function ($query, $search){
-                    return $query->where('name', 'like', '%'.$search.'%')
-                                ->orWhere('telegram', 'like', $search.'%')
-                                ->orWhere('instagram', 'like', $search.'%');
-                })->when($request->get('store_id'), function ($query, $store_id){
+                ->when($request->get('search'), function ($query, $search) {
+                    return $query->where('name', 'like', '%' . $search . '%')
+                        ->orWhere('telegram', 'like', $search . '%')
+                        ->orWhere('instagram', 'like', $search . '%');
+                })->when($request->get('store_id'), function ($query, $store_id) {
                     $query->whereNot('id', $store_id);
                 });
 
@@ -38,38 +39,41 @@ class StoreController extends ApiController
                 $stores = $stores->where('active', true);
             }
             $stores = $stores->paginate($this->getLimitPerPage());
-            if($request->has('store_id')){
+            if ($request->has('store_id')) {
                 $store = Store::find($request->get('store_id'));
                 $count = count($stores);
-                for ($i = 0; $i < $count+1; $i++){
-                    if($i == 0) {
+                $temp = 0;
+                for ($i = 0; $i < $count + 1; $i++) {
+
+                    if ($i == 0) {
                         $temp = $stores[0];
                         $stores[0] = $store;
                         continue;
                     }
+
                     $temp2 = $stores[$i];
                     $stores[$i] = $temp;
                     $temp = $temp2;
                 }
             }
-        } catch (QueryException $e) {
+        } catch (QueryException) {
             return $this->respondInvalidQuery();
         }
         return new StoreCollection($stores);
     }
 
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse|StoreResource
     {
         try {
             $employee = app(CreateStore::class)->execute([
-                'name' => $request->name,
-                'image' => $request->image,
-                'description' => $request->description,
-                'phone' => $request->phone,
-                'telegram'=> $request->get('telegram'),
-                'instagram'=> $request->get('instagram'),
+                'name' => $request->get('name'),
+                'image' => $request->get('image'),
+                'description' => $request->get('description'),
+                'phone' => $request->get('phone'),
+                'telegram' => $request->get('telegram'),
+                'instagram' => $request->get('instagram'),
             ]);
-        } catch (ModelNotFoundException $e) {
+        } catch (ModelNotFoundException) {
             return $this->respondNotFound();
         } catch (ValidationException $e) {
             return $this->respondValidatorFailed($e->validator);
@@ -78,20 +82,20 @@ class StoreController extends ApiController
         return new StoreResource($employee);
     }
 
-    public function update(Request $request)
+    public function update(Request $request): JsonResponse|StoreResource
     {
         try {
             $store = app(UpdateStore::class)->execute([
-                'store_id' => $request->store_id,
-                'name' => $request->name,
-                'phone' => $request->phone,
-                'description' => $request->description,
-                'image' => $request->image,
-                'telegram'=> $request->get('telegram'),
-                'instagram'=> $request->get('instagram'),
-                'active'=> $request->get('active'),
+                'store_id' => $request->get('store_id'),
+                'name' => $request->get('name'),
+                'phone' => $request->get('phone'),
+                'description' => $request->get('description'),
+                'image' => $request->get('image'),
+                'telegram' => $request->get('telegram'),
+                'instagram' => $request->get('instagram'),
+                'active' => $request->get('active'),
             ]);
-        } catch (ModelNotFoundException $e) {
+        } catch (ModelNotFoundException) {
             return $this->respondNotFound();
         } catch (ValidationException $e) {
             return $this->respondValidatorFailed($e->validator);
@@ -99,13 +103,14 @@ class StoreController extends ApiController
         return new StoreResource($store);
     }
 
-    public function clear(Request $request, $store){
+    public function clear(Request $request, $store): JsonResponse
+    {
         try {
             app(ClearStore::class)->execute($store);
-        } catch (ModelNotFoundException $e) {
+        } catch (ModelNotFoundException) {
             return $this->respondNotFound();
         }
-
-        return response(['message' => 'success'], 200);
+        $this->setHTTPStatusCode(200);
+        return $this->respond(['message' => 'success']);
     }
 }

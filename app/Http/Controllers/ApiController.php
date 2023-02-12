@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use App\Traits\JsonRespondController;
+use Illuminate\Http\JsonResponse;
 
 class ApiController extends Controller
 {
@@ -21,7 +20,7 @@ class ApiController extends Controller
     protected string $sort = 'created_at';
 
     /**
-     * @var string
+     * @var ?string
      */
     protected ?string $withParameter = null;
 
@@ -66,9 +65,9 @@ class ApiController extends Controller
     /**
      * Default request to the API.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function success()
+    public function success(): JsonResponse
     {
         return $this->respond([
             'success' => [
@@ -78,18 +77,18 @@ class ApiController extends Controller
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getWithParameter()
+    public function getWithParameter(): ?string
     {
         return $this->withParameter;
     }
 
     /**
-     * @param  string  $with
+     * @param string $with
      * @return self
      */
-    public function setWithParameter($with)
+    public function setWithParameter(string $with): static
     {
         $this->withParameter = $with;
 
@@ -99,16 +98,16 @@ class ApiController extends Controller
     /**
      * @return int
      */
-    public function getLimitPerPage()
+    public function getLimitPerPage(): int
     {
         return $this->limitPerPage;
     }
 
     /**
-     * @param  int  $limit
+     * @param int $limit
      * @return self
      */
-    public function setLimitPerPage($limit)
+    public function setLimitPerPage(int $limit): static
     {
         $this->limitPerPage = $limit;
 
@@ -120,7 +119,7 @@ class ApiController extends Controller
      *
      * @return string
      */
-    public function getSortDirection()
+    public function getSortDirection(): string
     {
         return $this->sortDirection;
     }
@@ -128,16 +127,16 @@ class ApiController extends Controller
     /**
      * @return string
      */
-    public function getSortCriteria()
+    public function getSortCriteria(): string
     {
         return $this->sort;
     }
 
     /**
-     * @param  string  $criteria
+     * @param string $criteria
      * @return self
      */
-    public function setSortCriteria($criteria)
+    public function setSortCriteria(string $criteria): static
     {
         $acceptedCriteria = [
             'created_at',

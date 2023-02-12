@@ -9,7 +9,7 @@ use App\Http\Resources\File\FileResource;
 
 class FileController extends Controller
 {
-    public function upload(Request $request)
+    public function upload(Request $request): \Illuminate\Http\Resources\Json\AnonymousResourceCollection
     {
         $final = [];
         if ($request->hasFile('file')) {
@@ -25,12 +25,10 @@ class FileController extends Controller
             }
 
             return FileResource::collection($final);
-        }else{
-            return 'error';
         }
     }
 
-    public function getFile(Request $request, $fileName)
+    public function getFile(Request $request, $fileName): \Illuminate\Http\Response
     {
         return response(Storage::get('files/' . $fileName))
             ->header('Content-Type', Storage::mimeType('files/' . $fileName));

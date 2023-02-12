@@ -4,10 +4,11 @@ namespace App\Services\Product;
 
 use App\Models\Product;
 use App\Services\BaseService;
+use Illuminate\Validation\ValidationException;
 
 class UpdateProduct extends BaseService
 {
-    public function rules()
+    public function rules():array
     {
         return [
             'product_id' => 'required|exists:products,id',
@@ -19,6 +20,9 @@ class UpdateProduct extends BaseService
         ];
     }
 
+    /**
+     * @throws ValidationException
+     */
     public function execute(array $data): Product
     {
         $this->validate($data);

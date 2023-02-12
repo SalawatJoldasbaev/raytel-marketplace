@@ -9,7 +9,7 @@ use App\Exceptions\PhoneAlreadyExistsException;
 
 class UpdateEmployee extends BaseService
 {
-    public function rules()
+    public function rules():array
     {
         return [
             'employee_id' => 'required|exists:employees,id',
@@ -19,6 +19,10 @@ class UpdateEmployee extends BaseService
         ];
     }
 
+    /**
+     * @throws PhoneAlreadyExistsException
+     * @throws ValidationException
+     */
     public function execute(array $data): Employee
     {
         $this->validate($data);
