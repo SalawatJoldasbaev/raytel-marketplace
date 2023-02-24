@@ -23,6 +23,7 @@ class SettingsController extends ApiController
                 'phone'=> $request->get('phone'),
                 'block_text'=> $request->get('block_text'),
                 'unblock_text'=> $request->get('unblock_text'),
+                'watermark_text'=> $request->watermark_text,
             ]);
         } catch (ValidationException $e) {
             return $this->respondValidatorFailed($e->validator);

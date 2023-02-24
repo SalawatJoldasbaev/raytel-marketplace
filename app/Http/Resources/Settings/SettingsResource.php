@@ -6,13 +6,8 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class SettingsResource extends JsonResource
 {
-    /**
-     * Transform the resource into an array.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
-     */
-    public function toArray($request)
+
+    public function toArray($request): array
     {
         return [
             'description' => $this->description,
@@ -24,6 +19,7 @@ class SettingsResource extends JsonResource
             'phone'=> $this->phone,
             'block_text'=> $this->block_text,
             'unblock_text'=> $this->unblock_text,
+            'watermark_text'=> $this->watermark_text,
         ];
     }
 }

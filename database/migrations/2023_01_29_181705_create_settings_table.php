@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('end_text');
             $table->text('block_text');
             $table->text('unblock_text');
+            $table->string('watermark_text')->nullable();
             $table->timestamps();
         });
     }

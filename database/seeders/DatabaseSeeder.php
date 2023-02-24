@@ -33,6 +33,7 @@ class DatabaseSeeder extends Seeder
             'unblock_text'=> 'unblock text',
             'phone'=> '+998953558899',
             'end_text'=> 'end text',
+            'watermark_text'=> 'watermark',
         ]);
         Store::factory()->has(Product::factory()->count(33))->count(100)->create();
         $this->call([

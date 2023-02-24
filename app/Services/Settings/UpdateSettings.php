@@ -23,6 +23,7 @@ class UpdateSettings extends BaseService
             'unblock_text'=> 'required',
             'end_text'=> 'required',
             'phone'=> 'required',
+            'watermark_text'=> 'required',
         ];
     }
 

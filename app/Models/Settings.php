@@ -22,5 +22,6 @@ class Settings extends Model
         'end_text',
         'block_text',
         'unblock_text',
+        'watermark_text',
     ];
 }
