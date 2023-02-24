@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * @method with()
  * @method create()
+ * @mixin IdeHelperProduct
  */
 
 class Product extends Model

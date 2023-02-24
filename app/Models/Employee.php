@@ -9,6 +9,9 @@ use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Support\Facades\Hash;
 
+/**
+ * @mixin IdeHelperEmployee
+ */
 class Employee extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;

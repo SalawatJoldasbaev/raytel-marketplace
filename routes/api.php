@@ -1,6 +1,7 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\NewPaymentController;
+use App\Http\Controllers\SettingsController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FileController;
@@ -20,12 +21,17 @@ Route::get('/files/{file_name}', [FileController::class, 'getFile']);
 Route::middleware(['auth:sanctum', 'ability:admin,mobile'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/files', [FileController::class, 'upload']);
-    Route::get('/stores', [StoreController::class, 'index']);
+    Route::prefix('stores')
+        ->controller(StoreController::class)
+        ->group(function (){
+            Route::get('/', 'index');
+            Route::get('/{store_id}', 'show');
+        });
     Route::get('/products', [ProductController::class, 'index']);
     Route::get('/products/random', [ProductController::class, 'RandomProduct']);
     Route::post('/products/view/{product}', [ProductController::class, 'viewProduct']);
-    Route::get('/settings', [\App\Http\Controllers\SettingsController::class, 'show']);
-    Route::post('/newPayment', [\App\Http\Controllers\NewPaymentController::class, 'newPayment']);
+    Route::get('/settings', [SettingsController::class, 'show']);
+    Route::post('/newPayment', [NewPaymentController::class, 'newPayment']);
 });
 
 Route::middleware(['auth:sanctum', 'abilities:admin'])->group(function () {
@@ -68,5 +74,5 @@ Route::middleware(['auth:sanctum', 'abilities:admin'])->group(function () {
         ->group(function () {
             Route::get('/', 'index');
         });
-    Route::patch('/settings', [\App\Http\Controllers\SettingsController::class, 'update']);
+    Route::patch('/settings', [SettingsController::class, 'update']);
 });

@@ -2,23 +2,26 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\UnauthorizedException;
 use App\Services\Product\DestroyProduct;
 use Carbon\Carbon;
 use App\Models\Product;
+use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Models\ViewedProduct;
 use App\Services\Product\CreateProduct;
 use App\Services\Product\UpdateProduct;
 use Illuminate\Database\QueryException;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Validation\ValidationException;
 use App\Http\Resources\Product\ProductResource;
 use App\Http\Resources\Product\ProductCollection;
-use App\Http\Resources\Product\RandomProductResource;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class ProductController extends ApiController
 {
-    public function index(Request $request): \Illuminate\Http\JsonResponse|ProductCollection
+    public function index(Request $request): JsonResponse|ProductCollection
     {
         try {
             $stores = Product::orderBy($this->sort, $this->sortDirection)
@@ -27,18 +30,18 @@ class ProductController extends ApiController
                 })
                 ->with('store')
                 ->paginate($this->getLimitPerPage());
-        } catch (QueryException $e) {
+        } catch (QueryException) {
             return $this->respondInvalidQuery();
         }
         return new ProductCollection($stores);
     }
 
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse|AnonymousResourceCollection
     {
         try {
             $employee = app(CreateProduct::class)->execute($request->all());
             return ProductResource::collection($employee);
-        } catch (ModelNotFoundException $e) {
+        } catch (ModelNotFoundException) {
             return $this->respondNotFound();
         } catch (ValidationException $e) {
             return $this->respondValidatorFailed($e->validator);
@@ -46,7 +49,7 @@ class ProductController extends ApiController
 
     }
 
-    public function update(Request $request)
+    public function update(Request $request): JsonResponse|ProductResource
     {
         try {
             $store = app(UpdateProduct::class)->execute([
@@ -57,7 +60,7 @@ class ProductController extends ApiController
                 'image' => $request->image,
                 'watermark_image' => $request->watermark_image,
             ]);
-        } catch (ModelNotFoundException $e) {
+        } catch (ModelNotFoundException) {
             return $this->respondNotFound();
         } catch (ValidationException $e) {
             return $this->respondValidatorFailed($e->validator);
@@ -65,99 +68,68 @@ class ProductController extends ApiController
         return new ProductResource($store);
     }
 
-    public function destroy($product)
+    public function destroy($product): JsonResponse
     {
         try {
             app(DestroyProduct::class)->execute($product);
-        } catch (ModelNotFoundException $e) {
+        } catch (ModelNotFoundException) {
             return $this->respondNotFound();
         }
 
-        return response(['message' => 'success'], 200);
+        return $this->respondObjectDeleted($product);
     }
 
     public function RandomProduct(Request $request)
     {
-        $user = $request->user();
-        $token = $user->currentAccessToken();
-        $viewedProducts = ViewedProduct::whereDate('viewed_at', Carbon::today())->pluck('product_id');
-        if (
-            $token->tokenable_type == 'App\\Models\\Device' and
-            (
-                count($viewedProducts) >= $user->limit_left or
-                strtotime(date('Y-m-d')) - strtotime($user->created_at) > 259200
-            )
-        ) {
-            $this->setHTTPStatusCode(403);
+
+        try {
+            [$user, $token, $viewedProducts] = $this->check($request);
+        } catch (UnauthorizedException){
+            return $this->respondUnauthorized();
+        } catch (Exception) {
+            return $this->limitOver();
+        }
+
+        $products = Product::query()->whereNotIn('id', $viewedProducts)->whereHas('store', function ($query) {
+            return $query->where('active', true);
+        })->inRandomOrder();
+        $products = $products->take(100)->get();
+
+        if (empty($products)) {
+            $this->setHTTPStatusCode(404);
             return $this->respond([
-                'error' => [
-                    'message' => 'limit is over'
-                ],
-                'error_code' => 43,
+                'message' => 'Product not found'
             ]);
         }
 
-        if ($user->tokenCan('mobile')) {
-            $products = Product::query()->whereNotIn('id', $viewedProducts)->whereHas('store', function ($query) {
-                return $query->where('active', true);
-            })->inRandomOrder();
-            $products = $products->take(100)->get();
-
-            if (empty($products)) {
-                $this->setHTTPStatusCode(404);
-
-                return $this->respond([
-                    'message' => 'Product not found'
-                ]);
+        if ($token->tokenable_type == 'App\\Models\\User') {
+            $active_at = strtotime($user->actived_at);
+            $time = Carbon::create(
+                date('Y', $active_at),
+                date('m', $active_at),
+                date('d', $active_at),
+                date('H', $active_at),
+                date('i', $active_at),
+                date('s', $active_at),
+            );
+            if ($time->addDays(33) <= Carbon::now()) {
+                $this->setHTTPStatusCode(403);
+                $user->status = 'inactive';
+                $user->save();
+                return $this->limitOver();
             }
-
-            if ($token->tokenable_type == 'App\\Models\\User') {
-                $active_at = strtotime($user->actived_at);
-                $time = Carbon::create(
-                    date('Y', $active_at),
-                    date('m', $active_at),
-                    date('d', $active_at),
-                    date('H', $active_at),
-                    date('i', $active_at),
-                    date('s', $active_at),
-                );
-                if ($time->addDays(33) <= Carbon::now()) {
-                    $this->setHTTPStatusCode(403);
-                    $user->status = 'inactive';
-                    $user->save();
-                    return $this->respond([
-                        'error' => [
-                            'message' => 'limit is over'
-                        ],
-                        'error_code' => 43,
-                    ]);
-                }
-            }
-
-            return ProductResource::collection($products);
         }
+        return ProductResource::collection($products);
     }
 
-    public function viewProduct(Request $request, Product $product)
+    public function viewProduct(Request $request, Product $product): JsonResponse|array
     {
-        $user = $request->user();
-        $token = $user->currentAccessToken();
-        $viewedProducts = ViewedProduct::whereDate('viewed_at', Carbon::today())->pluck('product_id');
-
-        if (
-            $token->tokenable_type == 'App\\Models\\Device' and
-            (
-                count($viewedProducts) >= $user->limit_left or
-                strtotime(date('Y-m-d')) - strtotime($user->created_at) > 259200
-            )
-        ) {
-            $this->setHTTPStatusCode(403);
-            return $this->respond([
-                'error' => [
-                    'message' => 'limit is over'
-                ],
-                'error_code' => 43,
-            ]);
+        try {
+            [$user, $token, $viewedProducts] = $this->check($request);
+        } catch (UnauthorizedException){
+            return $this->respondUnauthorized();
+        } catch (Exception) {
+            return $this->limitOver();
         }
 
         $data = [
@@ -168,9 +140,9 @@ class ProductController extends ApiController
         $alert = false;
         if ($token->tokenable_type == 'App\\Models\\Device') {
             $data['device_id'] = $user->id;
-            if(count($viewedProducts) - 15 > 0){
-                for ($i=15; $i <= 100; $i+=3){
-                    if(count($viewedProducts)+1 == $i){
+            if (count($viewedProducts) - 15 > 0) {
+                for ($i = 15; $i <= 100; $i += 3) {
+                    if (count($viewedProducts) + 1 == $i) {
                         $alert = true;
                         break;
                     }
@@ -184,8 +156,31 @@ class ProductController extends ApiController
 
         ViewedProduct::create($data);
         return [
-            'alert'=> $alert,
-            'count'=> count($viewedProducts)+1,
+            'alert' => $alert,
+            'count' => count($viewedProducts) + 1,
         ];
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function check($request): array
+    {
+        $user = $request->user();
+        if ($user->tokenCan('admin')) {
+            throw new UnauthorizedException();
+        }
+        $token = $user->currentAccessToken();
+        $viewedProducts = ViewedProduct::whereDate('viewed_at', Carbon::today())->pluck('product_id');
+        if (
+            $token->tokenable_type == 'App\\Models\\Device' and
+            (
+                count($viewedProducts) >= $user->limit_left or
+                strtotime(date('Y-m-d')) - strtotime($user->created_at) > 259200
+            )
+        ) {
+            throw new Exception('limit');
+        }
+        return [$user, $token, $viewedProducts];
     }
 }

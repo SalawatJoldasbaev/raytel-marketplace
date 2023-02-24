@@ -31,8 +31,9 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Device whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Device whereLimitLeft($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Device whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
-	class Device extends \Eloquent {}
+	class IdeHelperDevice {}
 }
 
 namespace App\Models{
@@ -58,8 +59,9 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Employee wherePassword($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Employee wherePhone($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Employee whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
-	class Employee extends \Eloquent {}
+	class IdeHelperEmployee {}
 }
 
 namespace App\Models{
@@ -79,8 +81,9 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|File wherePath($value)
  * @method static \Illuminate\Database\Eloquent\Builder|File whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|File whereUrl($value)
+ * @mixin \Eloquent
  */
-	class File extends \Eloquent {}
+	class IdeHelperFile {}
 }
 
 namespace App\Models{
@@ -110,8 +113,9 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Product whereStoreId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Product whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Product whereWatermarkImage($value)
+ * @mixin \Eloquent
  */
-	class Product extends \Eloquent {}
+	class IdeHelperProduct {}
 }
 
 namespace App\Models{
@@ -137,8 +141,9 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Report whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Report whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Report whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
-	class Report extends \Eloquent {}
+	class IdeHelperReport {}
 }
 
 namespace App\Models{
@@ -172,8 +177,9 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Settings whereTitle($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Settings whereUnblockText($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Settings whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
-	class Settings extends \Eloquent {}
+	class IdeHelperSettings {}
 }
 
 namespace App\Models{
@@ -206,8 +212,9 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Store wherePhone($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Store whereTelegram($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Store whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
-	class Store extends \Eloquent {}
+	class IdeHelperStore {}
 }
 
 namespace App\Models{
@@ -240,8 +247,9 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|User wherePhone($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
-	class User extends \Eloquent {}
+	class IdeHelperUser {}
 }
 
 namespace App\Models{
@@ -265,7 +273,8 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|ViewedProduct whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ViewedProduct whereUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ViewedProduct whereViewedAt($value)
+ * @mixin \Eloquent
  */
-	class ViewedProduct extends \Eloquent {}
+	class IdeHelperViewedProduct {}
 }
 

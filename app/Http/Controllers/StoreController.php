@@ -62,6 +62,15 @@ class StoreController extends ApiController
         return new StoreCollection($stores);
     }
 
+    public function show(int $id): JsonResponse|StoreResource
+    {
+        try {
+            return new StoreResource(Store::findOrFail($id));
+        }catch (ModelNotFoundException){
+            return $this->respondNotFound();
+        }
+    }
+
     public function store(Request $request): JsonResponse|StoreResource
     {
         try {
@@ -103,7 +112,7 @@ class StoreController extends ApiController
         return new StoreResource($store);
     }
 
-    public function clear(Request $request, $store): JsonResponse
+    public function clear($store): JsonResponse
     {
         try {
             app(ClearStore::class)->execute($store);
