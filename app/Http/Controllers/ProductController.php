@@ -93,7 +93,7 @@ class ProductController extends ApiController
         $products = Product::query()->whereNotIn('id', $viewedProducts)->whereHas('store', function ($query) {
             return $query->where('active', true);
         })->inRandomOrder();
-        $products = $products->take(100)->get();
+        $products = $products->take(100-count($viewedProducts))->get();
 
         if (empty($products)) {
             $this->setHTTPStatusCode(404);
